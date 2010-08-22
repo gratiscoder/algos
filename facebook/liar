@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+import sys
+
+g = {}
+
+def rdline(f):
+	n = f.readline()
+	return (None if (n==None) else n.rstrip("\n"))
+
+def group_em(f):
+	n = rdline(f)
+	if n == None:
+		return None
+	n = int(n)
+	for	i in range(1,n):
+		accuser_line = rdline(f)
+		accuser_name = accuser_line.rstrip("0123456789")
+		n_accused = int(accuser_line[len(accuser_name):])
+		accuser_name = accuser_name.strip()
+		seen = accuser_name in g.keys()
+		cset2 = seen and g[accuser_name]["opp"]["mems"] or set()
+		for x in range(1, n_accused):
+			name = rdline(f)
+			if (not seen) and name in g.keys():
+				g[name]["mems"].update(cset2)
+				cset2 = g[name]["mems"]
+				g[name]["opp"]["mems"].update(accuser_name)
+				seen = True
+			cset2.add(name)
+		if not seen:
+			cg1 = {"opp":None, "mems":set([accuser_name])}
+			cg2 = {"opp":cg1, "mems":cset2}
+			cg1["opp"] = cg2
+			g[accuser_name] = cg1
+			for x in 
+			
+
+if __name__ == "__main__":
+	group_em(sys.stdin)
+
+
