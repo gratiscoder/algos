@@ -1,11 +1,27 @@
 #!/usr/bin/env python
 import sys
 
-g = {}
+gg = {}
 
 def rdline(f):
 	n = f.readline()
 	return (None if (n==None) else n.rstrip("\n"))
+
+def merge_group_pairs(g, glike):
+	"""This merges glike with g and glike.opposite with g.opposite"""
+	if g is glike:
+	   return False
+
+	for x in glike['mems']:
+		g.add(x)
+		gg[x] = g
+
+	gopp = glike['opp']
+	for x in gopp['mems']:
+		gopp.add(x)
+		gg[x] = gopp
+
+	return True
 
 def group_em(f):
 	n = rdline(f)
@@ -17,21 +33,27 @@ def group_em(f):
 		accuser_name = accuser_line.rstrip("0123456789")
 		n_accused = int(accuser_line[len(accuser_name):])
 		accuser_name = accuser_name.strip()
-		seen = accuser_name in g.keys()
-		cset2 = seen and g[accuser_name]["opp"]["mems"] or set()
+		seen = accuser_name in gg.keys()
+		cset2 = seen and gg[accuser_name]["opp"]["mems"] or set()
 		for x in range(1, n_accused):
 			name = rdline(f)
-			if (not seen) and name in g.keys():
-				g[name]["mems"].update(cset2)
-				cset2 = g[name]["mems"]
-				g[name]["opp"]["mems"].update(accuser_name)
+			if name in gg.keys():
+				if not seen:
+					accuser_grp = gg[name]['opp']
+					accuser_grp['mems'].add(accuser_name)
+					gg[accuser_name] = accuser_grp
+					seen = True
+				and cset2 is not gg[name]['mems']:
+				gg[name]["mems"].update(cset2)
+				cset2 = gg[name]["mems"]
+				gg[name]["opp"]["mems"].update(accuser_name)
 				seen = True
 			cset2.add(name)
 		if not seen:
 			cg1 = {"opp":None, "mems":set([accuser_name])}
 			cg2 = {"opp":cg1, "mems":cset2}
 			cg1["opp"] = cg2
-			g[accuser_name] = cg1
+			gg[accuser_name] = cg1
 			for x in 
 			
 
